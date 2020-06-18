@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 
 typedef struct Cliente{
     int codigo;
@@ -23,6 +24,10 @@ typedef struct Festa{
 }Festa;
 
 int numeroClientes=0;
+int numeroFuncionarios=0;
+int numeroFornecedores=0;
+int numeroFestas=0;
+
 void cadastraCli();
 void cadastraFuncionario();
 void cadastraFornecedor();
@@ -30,13 +35,21 @@ void cadastraFesta();
 
 void strSplit(char *strTOsplit,char *strArr[], char *strSeparet,int nArr);
 void  lerClientes(Cliente VetorClientes[]);
-void ListaCompletaClientes(Cliente VetorClientes[]);
+void  lerFuncionario(Funcionario vetorFuncionario[]);
+void  lerFornecedor(Fornecedor vetorFornecedor[]);
+void  lerFesta(Festa vetorFesta[]);
+
+void informacoesCliente(Cliente vetorClientes[]);
 
 
 
 int main()
 {
-   Cliente VetorClientes[1000];
+   Cliente VetorClientes[400];
+   Funcionario vetorFuncionario[400];
+   Fornecedor vetorFornecedor[400];
+   Festa vetorFesta[400];
+
    int i,Opcao;
     int codaux;
     int cod;
@@ -55,7 +68,8 @@ int main()
 
         if (Opcao == 1)
         {
-               cadastraCli();
+               //cadastraCli();
+               lerClientes(VetorClientes);
 
 
         }
@@ -63,17 +77,24 @@ int main()
         {
 
          cadastraFuncionario();
+         lerFuncionario(vetorFuncionario);
 
 
         }
         else if(Opcao == 3)
         {
            cadastraFornecedor();
+           lerFornecedor(vetorFornecedor);
         }
 
         else if(Opcao == 4)
         {
            cadastraFesta();
+        }
+        else if(Opcao == 5 )
+        {
+
+            informacoesCliente(VetorClientes);
         }
         }    while (Opcao != 8 || Opcao < 8);
 
@@ -118,10 +139,12 @@ void cadastraFuncionario()
         gets(fcrio.salario);
         printf("\nDigite o tipo: \n1-fixo \n2-temporario ");
         scanf("%i",&fcrio.tipo);
+        fflush(stdin);
 
     FILE *arq2 = fopen("Funcionarios.txt","a");
 
-    fprintf(arq2,"%d;%s;%s;%s;%s\n" ,fcrio.codigo,fcrio.nome,fcrio.telefone,fcrio.funcao,fcrio.salario);
+    fprintf(arq2,"%d;%s;%s;%s;%s;%i\n" ,fcrio.codigo,fcrio.nome,fcrio.telefone
+            ,fcrio.funcao,fcrio.salario,fcrio.tipo);
 
 
     fclose(arq2);
@@ -139,7 +162,7 @@ void cadastraFornecedor()
         gets(forn.telefone);
         printf("\nDigite o produto: ");
         gets(forn.produto);
-        
+
 
     FILE *arq3 = fopen("Fornecedores.txt","a");
 
@@ -168,7 +191,7 @@ void cadastraFesta()
         gets(festa.diaSemana);
         printf("\nDigite o horario: ");
         gets(festa.horario);
-        
+
 
     FILE *arq4 = fopen("Festas.txt","a");
 
@@ -188,45 +211,168 @@ void strSplit(char *strTOsplit,char *strArr[], char *strSeparet,int nArr)
             pch = strtok (strTOsplit,strSeparet);
             for(i = 0;i < nArr;i++)
             {
-               // printf ("%s\n",pch);
+              printf ("%s\n",pch);
 
                 strArr[i] = pch;
                 pch = strtok (NULL,strSeparet);
             }
          }
 
- 
+
 
 
 
 void  lerClientes(Cliente VetorClientes[])
         {
-
             FILE *arquivo;
             arquivo = fopen("Clientes.txt", "r");
             char linha[100];
+            struct stat buf;
+            stat("Clientes.txt", &buf);
             char *result;
             char * informacoes_linha[5];
             int i =0;
-            while (!feof(arquivo))  // Enquando não chegar no fim do arquivo..
+            while (ftello(arquivo) != buf.st_size)  // Enquando não chegar no fim do arquivo..
             {
                 result = *fgets (linha, 100, arquivo);//Leitura de uma linha do arquivo...
                 strSplit(linha, informacoes_linha, ";",5); //Separa os campos e os armazena no vetor de 3 posições chamado informacoes_linha
                 //Cada posição do vetor VetorEmpregados guarda não so uma mas tres informações.
                 VetorClientes[i].codigo = atoi(informacoes_linha[0]);
                 strcpy(VetorClientes[i].nome, (const char*)(informacoes_linha[1]) );
-                VetorClientes[i].endereco = atof(informacoes_linha[2]);
+                strcpy(VetorClientes[i].endereco, (const char*)(informacoes_linha[2]) );
+                strcpy(VetorClientes[i].telefone, (const char*)(informacoes_linha[3]) );
+                strcpy(VetorClientes[i].DTNasc, (const char*)(informacoes_linha[4]) );
+
+
                 i++;
+
             }
             numeroClientes = i;
         }
 
+void  lerFuncionario(Funcionario vetorFuncionario[])
+{
 
- void ListaCompletaClientes(Cliente VetorClientes[])
-        {
-			int i;
-            for (i = 0; i < numeroClientes; i++)
+
+            FILE *arquivo;
+            arquivo = fopen("Funcionarios.txt", "r");
+            char linha[100];
+            struct stat buf;
+            stat("Funcionarios.txt", &buf);
+            char *result;
+            char * informacoes_linha[6];
+            int i =0;
+             while (ftello(arquivo) != buf.st_size)  // Enquando não chegar no fim do arquivo..
             {
-               printf(" %s : %d : %.2f \n", VetorClientes[i].nome, VetorClientes[i].matricula,VetorEmpregados[i].salario);
+                result = *fgets (linha, 100, arquivo);//Leitura de uma linha do arquivo...
+                strSplit(linha, informacoes_linha, ";",6); //Separa os campos e os armazena no vetor de 3 posições chamado informacoes_linha
+                //Cada posição do vetor VetorEmpregados guarda não so uma mas tres informações.
+                vetorFuncionario[i].codigo = atoi(informacoes_linha[0]);
+                strcpy(vetorFuncionario[i].nome, (const char*)(informacoes_linha[1]) );
+                strcpy(vetorFuncionario[i].telefone, (const char*)(informacoes_linha[2]) );
+                strcpy(vetorFuncionario[i].funcao, (const char*)(informacoes_linha[3]) );
+                strcpy(vetorFuncionario[i].salario, (const char*)(informacoes_linha[4]) );
+                vetorFuncionario[i].codigo = atoi(informacoes_linha[5]);
+
+
+
+                i++;
             }
-        }
+            numeroFuncionarios = i;
+
+
+
+}
+
+void  lerFornecedor(Fornecedor vetorFornecedor[])
+
+ {
+
+            FILE *arquivo;
+            arquivo = fopen("Fornecedores.txt", "r");
+            char linha[100];
+            struct stat buf;
+            stat("Fornecedores.txt", &buf);
+            char *result;
+            char * informacoes_linha[4];
+            int i =0;
+             while (ftello(arquivo) != buf.st_size)   // Enquando não chegar no fim do arquivo..
+            {
+                result = *fgets (linha, 100, arquivo);//Leitura de uma linha do arquivo...
+                strSplit(linha, informacoes_linha, ";",4); //Separa os campos e os armazena no vetor de 3 posições chamado informacoes_linha
+                //Cada posição do vetor VetorEmpregados guarda não so uma mas tres informações.
+                vetorFornecedor[i].codigo = atoi(informacoes_linha[0]);
+                strcpy(vetorFornecedor[i].nome, (const char*)(informacoes_linha[1]) );
+                strcpy(vetorFornecedor[i].telefone, (const char*)(informacoes_linha[2]) );
+                strcpy(vetorFornecedor[i].produto, (const char*)(informacoes_linha[3]) );
+
+
+
+
+                i++;
+            }
+            numeroFornecedores = i;
+
+}
+
+void  lerFesta(Festa vetorFesta[])
+{
+
+
+            FILE *arquivo;
+            arquivo = fopen("Festas.txt", "r");
+            char linha[100];
+            struct stat buf;
+            stat("Festas.txt", &buf);
+            char *result;
+            char * informacoes_linha[6];
+            int i =0;
+             while (ftello(arquivo) != buf.st_size)   // Enquando não chegar no fim do arquivo..
+            {
+                result = *fgets (linha, 100, arquivo);//Leitura de uma linha do arquivo...
+                strSplit(linha, informacoes_linha, ";",6); //Separa os campos e os armazena no vetor de 3 posições chamado informacoes_linha
+                //Cada posição do vetor VetorEmpregados guarda não so uma mas tres informações.
+                vetorFesta[i].codigo = atoi(informacoes_linha[0]);
+                vetorFesta[i].convidados = atoi(informacoes_linha[1]);
+                strcpy(vetorFesta[i].tema, (const char*)(informacoes_linha[2]) );
+                strcpy(vetorFesta[i].data, (const char*)(informacoes_linha[3]) );
+                strcpy(vetorFesta[i].diaSemana, (const char*)(informacoes_linha[4]) );
+                strcpy(vetorFesta[i].horario, (const char*)(informacoes_linha[5]) );
+
+
+                i++;
+            }
+            numeroFornecedores = i;
+
+}
+
+
+
+void informacoesCliente(Cliente vetorClientes[])
+{           int i,valor=0;
+            char nome[50];
+            lerClientes(vetorClientes);
+            printf("Digite o nome do cliente: ");
+            gets(nome);
+            for(i = 0; nome[i]; i++){
+            nome[i] = tolower(nome[i]);
+           }
+           for(i = 0; vetorClientes[i].nome[i]; i++){
+            vetorClientes[i].nome[i] = tolower(vetorClientes[i].nome[i]);
+           }
+
+
+            for (i = 0; i <numeroClientes; i++)
+            {
+                           valor = strcmp(nome, vetorClientes[i].nome);
+                           if(valor == 0)
+                           {
+                            printf("%i : %s : %s\n", vetorClientes[i].codigo, vetorClientes[i].nome,vetorClientes[i].endereco);
+                           }
+
+            }
+
+
+}
+
+
