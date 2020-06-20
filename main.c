@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <unistd.h>
+
 
 typedef struct Cliente{
     int codigo;
@@ -20,8 +22,9 @@ typedef struct Fornecedor{
 
 typedef struct Festa{
     int codigo,convidados,diaSemana;
-    char tema[250],data[250],horario[250],cliente[250];
+    char tema[250],data[250],horario[250],cliente[250],status[250];
 }Festa;
+
 
 int numeroClientes=0;
 int numeroFuncionarios=0;
@@ -34,28 +37,34 @@ void cadastraFuncionario();
 void cadastraFornecedor();
 void cadastraFesta();
 
+
+
 void strSplit(char *strTOsplit,char *strArr[], char *strSeparet,int nArr);
 void  lerClientes(Cliente VetorClientes[]);
 void  lerFuncionario(Funcionario vetorFuncionario[]);
 void  lerFornecedor(Fornecedor vetorFornecedor[]);
 void  lerFesta(Festa vetorFesta[]);
+void verificaFestaData(Festa vetorFesta[],char data[20]);
 
-void informacoesCliente(Cliente vetorClientes[]);
 void informacoesFuncionarios(Funcionario vetorFuncionario[]);
 void informacoesFornecedores(Fornecedor vetorFornecedor[]);
 void buscaFesta(Festa vetorFestas[]);
 void calculaPreco(Festa vetorFestas[]);
+void buscaFestaData(Festa vetorFesta[]);
 
+
+
+   Cliente VetorClientes[400];
+   Funcionario vetorFuncionario[400];
+   Fornecedor vetorFornecedor[400];
+   Festa vetorFesta[400];
 
 
 
 
 int main()
 {
-   Cliente VetorClientes[400];
-   Funcionario vetorFuncionario[400];
-   Fornecedor vetorFornecedor[400];
-   Festa vetorFesta[400];
+
 
     int i,Opcao,Op2;
     int cod;
@@ -75,8 +84,8 @@ int main()
 
         if (Opcao == 1)
         {
-               //cadastraCli();
-               lerClientes(VetorClientes);
+               cadastraCli();
+              // lerClientes(VetorClientes);
 
 
         }
@@ -127,6 +136,10 @@ int main()
                        buscaFesta(vetorFesta);
 
         }
+        else if(Opcao == 9)
+        {
+
+        }
 
         }    while (Opcao != 10 || Opcao < 10);
 
@@ -134,13 +147,37 @@ int main()
     return 0;
 }
 
+int Search_in_File(char *fname) {
+	FILE *fp;
+	if((fp = fopen(fname, "r")) == NULL) {
+		return 1;
+	}
+	else{
+
+	if(fp) {
+		fclose(fp);
+	}
+	return 2;
+
+	}
+
+}
+
+
 void cadastraCli()
 {
+
         Cliente cli;
+        if(Search_in_File("Clientes.txt")==2)
+        {
+            lerClientes(VetorClientes);
+            cli.codigo = numeroClientes+1;
+        }
+        else{
+            cli.codigo=1;
+        }
 
 
-
-        cli.codigo++;
         printf("\nDigite o nome: ");
         gets(cli.nome);
         printf("\nDigite o endereco: ");
@@ -160,7 +197,14 @@ void cadastraCli()
 void cadastraFuncionario()
 {
     Funcionario fcrio;
-    fcrio.codigo++;
+     if(Search_in_File("Funcionarios.txt")==2)
+        {
+            lerFuncionario(vetorFuncionario);
+            fcrio.codigo = numeroFuncionarios+1;
+        }
+        else{
+            fcrio.codigo=1;
+        }
         printf("\nDigite o nome: ");
         gets(fcrio.nome);
         printf("\nDigite o telefone: ");
@@ -187,7 +231,14 @@ void cadastraFuncionario()
 void cadastraFornecedor()
 {
     Fornecedor forn;
-    fflush(stdin);
+     if(Search_in_File("Fornecedores.txt")==2)
+        {
+            lerFornecedor(vetorFornecedor);
+            forn.codigo = numeroFornecedores+1;
+        }
+        else{
+            forn.codigo=1;
+        }
         printf("Digite o codigo: ");
         scanf("%i",&forn.codigo);
         fflush(stdin);
@@ -214,7 +265,14 @@ void cadastraFornecedor()
 void cadastraFesta()
 {
     Festa festa;
-        festa.codigo++;
+        if(Search_in_File("Festas.txt")==2)
+        {
+            lerFesta(vetorFesta);
+            festa.codigo = numeroFestas+1;
+        }
+        else{
+            festa.codigo=1;
+        }
         printf("\nDigite o nome do cliente: ");
         gets(festa.cliente);
         printf("\nDigite a quantidade de convidados: ");
@@ -224,6 +282,7 @@ void cadastraFesta()
         gets(festa.tema);
         printf("\nDigite a data: ");
         gets(festa.data);
+        verificaFestaData(vetorFesta,festa.data);
         printf("\nDigite o dia da semana:\n1-domingo \n2-segunda \n3-terca \n4-quarta \n5-quinta \n6-sexta \n7-sabado ");
         scanf("%d",&festa.diaSemana);
         fflush(stdin);
@@ -237,6 +296,8 @@ void cadastraFesta()
 
 
     fclose(arq4);
+
+    FILE *arq5 = fopen("DataFesta.txt","a");
 
 
 }
@@ -255,8 +316,6 @@ void strSplit(char *strTOsplit,char *strArr[], char *strSeparet,int nArr)
                 pch = strtok (NULL,strSeparet);
             }
          }
-
-
 
 
 
@@ -387,8 +446,9 @@ void  lerFesta(Festa vetorFesta[])
 
 
 
+
 void informacoesCliente(Cliente vetorClientes[])
-{           int i,valor=0;
+{           int i,j,valor=0;
             char nome[50];
             lerClientes(vetorClientes);
             printf("Digite o nome do cliente: ");
@@ -396,13 +456,18 @@ void informacoesCliente(Cliente vetorClientes[])
             for(i = 0; nome[i]; i++){
             nome[i] = tolower(nome[i]);
            }
-           for(i = 0; vetorClientes[i].nome[i]; i++){
-            vetorClientes[i].nome[i] = tolower(vetorClientes[i].nome[i]);
-           }
+          
+   //                 for(j=0;VetorEmpregado[i].nome[j];j++)
+  //   {
+      //   VetorEmpregado[i].nome[j] = tolower(VetorEmpregado[i].nome[j]);
+    // }
 
 
             for (i = 0; i <numeroClientes; i++)
             {
+                          for(j = 0; vetorClientes[i].nome[j]; j++){
+            vetorClientes[i].nome[j] = tolower(vetorClientes[i].nome[j]);
+           }
                            valor = strcmp(nome, vetorClientes[i].nome);
                            if(valor == 0)
                            {
@@ -416,7 +481,7 @@ void informacoesCliente(Cliente vetorClientes[])
 }
 void informacoesFuncionarios(Funcionario vetorFuncionario[])
 {
-            int i,valor=0;
+            int i,j,valor=0;
             char nome[50];
             lerFuncionario(vetorFuncionario);
             printf("Digite o nome do funcionario: ");
@@ -424,13 +489,14 @@ void informacoesFuncionarios(Funcionario vetorFuncionario[])
             for(i = 0; nome[i]; i++){
             nome[i] = tolower(nome[i]);
            }
-           for(i = 0; vetorFuncionario[i].nome[i]; i++){
-            vetorFuncionario[i].nome[i] = tolower(vetorFuncionario[i].nome[i]);
-           }
+           
 
 
             for (i = 0; i <numeroFuncionarios; i++)
             {
+                for(j = 0; vetorFuncionario[i].nome[j]; i++){
+            vetorFuncionario[i].nome[j] = tolower(vetorFuncionario[i].nome[j]);
+           }
                            valor = strcmp(nome, vetorFuncionario[i].nome);
                            if(valor == 0)
                            {
@@ -445,7 +511,7 @@ void informacoesFuncionarios(Funcionario vetorFuncionario[])
 
 void informacoesFornecedores(Fornecedor vetorFornecedor[])
 {
-            int i,valor=0;
+            int i,j,valor=0;
             char nome[50];
             lerFornecedor(vetorFornecedor);
             printf("Digite o nome do funcionario: ");
@@ -453,13 +519,14 @@ void informacoesFornecedores(Fornecedor vetorFornecedor[])
             for(i = 0; nome[i]; i++){
             nome[i] = tolower(nome[i]);
            }
-           for(i = 0; vetorFornecedor[i].nome[i]; i++){
-            vetorFornecedor[i].nome[i] = tolower(vetorFornecedor[i].nome[i]);
-           }
+           
 
 
             for (i = 0; i <numeroFornecedores; i++)
             {
+                for(j = 0; vetorFornecedor[i].nome[j]; j++){
+            vetorFornecedor[i].nome[j] = tolower(vetorFornecedor[i].nome[j]);
+           }
                            valor = strcmp(nome, vetorFornecedor[i].nome);
                            if(valor == 0)
                            {
@@ -474,7 +541,7 @@ void informacoesFornecedores(Fornecedor vetorFornecedor[])
 
 void buscaFesta(Festa vetorFestas[])
 {
-            int i,valor=0;
+            int i,j,valor=0;
             char nome[50],cliente;
             lerFesta(vetorFestas);
             printf("Digite o nome do cliente: ");
@@ -482,13 +549,14 @@ void buscaFesta(Festa vetorFestas[])
             for(i = 0; nome[i]; i++){
             nome[i] = tolower(nome[i]);
            }
-           for(i = 0; vetorFestas[i].cliente[i]; i++){
-            vetorFestas[i].cliente[i] = tolower(vetorFestas[i].cliente[i]);
-           }
-
+           
 
             for (i = 0; i <numeroFestas; i++)
             {
+                for(j = 0; vetorFestas[i].cliente[j]; j++){
+            vetorFestas[i].cliente[j] = tolower(vetorFestas[i].cliente[j]);
+           }
+
 
                            valor = strcmp(nome, vetorFestas[i].cliente);
                            if(valor == 0)
@@ -503,28 +571,48 @@ void buscaFesta(Festa vetorFestas[])
 
 }
 
+void verificaFestaData(Festa vetorFesta[],char data[20])
+{
+    int i,valor=0;
+    if(Search_in_File("Festas.txt")==2)
+        {
+            lerFesta(vetorFesta);
+            for (i = 0; i <numeroFestas; i++)
+            {
+                       valor = strcmp(data, vetorFesta[i].data);
+                       if(valor == 0)
+                       {
+                           printf("\ndata nao disponivel");
+                           return 0;
+                       }
+
+            }
+
+        }
+        else{
+            printf("Data disponivel");
+        }
+
+
+}
+
 void buscaFestaData(Festa vetorFestas[])
 {
             int i,valor=0;
-            char nome[50],cliente;
+            char data[50],cliente;
             lerFesta(vetorFestas);
-            printf("Digite a data da festa: ");
-            gets(nome);
+            printf("Digite a data nesse modelo dd/mm/aa: ");
+            gets(data);
 
 
 
-            for (i = 0; i <numeroFestas; i++)
-            {
 
-
-
-            }
 
 }
 
 void calculaPreco(Festa vetorFestas[])
 {
-    int i,cod;
+    int i,cod,parcl;
     printf("Digite o codigo da festa: ");
     scanf("%d",&cod);
     lerFesta(vetorFestas);
@@ -600,6 +688,31 @@ void calculaPreco(Festa vetorFestas[])
     }
 
     printf("%f\n",preco);
+
+    float valFinal;
+    printf("Qual sua forma de pagamento: \n1- A vista \n2- Duas parcelaas \n3- Tres parcelas \n4- Quatro ou mais parcelas");
+    scanf("%i",&parcl);
+    fflush(stdin);
+
+    if(parcl==1)
+    {
+        valFinal = (preco - ((preco*10.0)/100));
+    }
+    else if(parcl==2)
+    {
+        valFinal = (preco -((preco*5.0)/100));
+    }
+    else if(parcl==3)
+    {
+        valFinal = (preco -((preco*2.0)/100));
+    }
+    else if(parcl==4)
+    {
+        valFinal = preco;
+    }
+
+    printf("O preco e: %f",valFinal);
+
 
 
 }
