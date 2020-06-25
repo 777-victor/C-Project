@@ -58,7 +58,7 @@ void informacoesFornecedores(Fornecedor vetorFornecedor[]);
 void buscaFesta(Festa vetorFestas[]);
 
 void calculaPreco(Festa vetorFestas[]);
-
+void attContrato(Contrato vetorContrato[]);
 void buscaFestaData(Festa vetorFesta[]);
 
 
@@ -128,7 +128,7 @@ int main()
         }
         else if(Opcao ==6)
         {
-
+          attContrato(vetorContrato);
         }
 
         else if(Opcao == 7 )
@@ -813,10 +813,49 @@ void buscaFestaData(Festa vetorFesta[])
         }
 
 
+}
+
+void attContrato(Contrato vetorContrato[])
+{
+     int i,num,valor;
+    
+           
+            if(Search_in_File("Contratos.txt")==2)
+        {
+            lerContrato(vetorContrato);
+            printf("Digite o numero do contrato: ");
+            scanf("%i",num);
+            
+            for ( i = 0; i < numeroContratos; i++)
+            {
+                if(vetorContrato[i].num == num)
+                {
+printf("Numero do contrato: %i\nValor total: %f\n Desconto: %f \nValor Final : %f\nForma de pagamento: %i Parcela(s)\nStatus 1 para pago 2 para nao pago: %i \nCodigo da festa: %i\n"
+                                                          ,vetorContrato[j].num,vetorContrato[j].valorTotal,vetorContrato[j].desconto,vetorContrato[j].valorFinal,vetorContrato[j].pagamento,vetorContrato[j].status,vetorContrato[j].codigo);                }
+            }
+            
+
+
+        
+
+
+        }
+        
+        else {
+            printf("Nenhum contatro cadastrado.\n")
+            main();
+        }
+        
+      
+
 
 
 
 }
+
+
+
+
 
 void calculaPreco(Festa vetorFestas[])
 {
