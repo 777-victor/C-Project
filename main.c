@@ -786,7 +786,7 @@ void buscaFestaData(Festa vetorFesta[])
                                                if(vetorContrato[j].codigo == vetorFesta[i].codigo)
                                                {
 
-                                                   printf("Numero do contrato: %i\nValor total: %f\n Desconto: %f \nValor Final : %f\nForma de pagamento: %i Parcela(s)\nStatus 1 para pago 2 para nao pago: %i \nCodigo da festa: %i\n"
+                                                   printf("Numero do contrato: %i\nValor total: %f\n Desconto: %f \nValor Final : %f\nForma de pagamento: %i Parcela(s)\nStatus 1 para pago 2 para nao pago e 3 para cancelado: %i \nCodigo da festa: %i\n"
                                                           ,vetorContrato[j].num,vetorContrato[j].valorTotal,vetorContrato[j].desconto,vetorContrato[j].valorFinal,vetorContrato[j].pagamento,vetorContrato[j].status,vetorContrato[j].codigo);
 
                                                }
@@ -817,36 +817,52 @@ void buscaFestaData(Festa vetorFesta[])
 
 void attContrato(Contrato vetorContrato[])
 {
-     int i,num,valor;
-    
-           
+     int i,j,num,valor;
+
+
             if(Search_in_File("Contratos.txt")==2)
         {
             lerContrato(vetorContrato);
             printf("Digite o numero do contrato: ");
-            scanf("%i",num);
-            
+            scanf("%i",&num);
+            fflush(stdin);
+
             for ( i = 0; i < numeroContratos; i++)
             {
                 if(vetorContrato[i].num == num)
                 {
-printf("Numero do contrato: %i\nValor total: %f\n Desconto: %f \nValor Final : %f\nForma de pagamento: %i Parcela(s)\nStatus 1 para pago 2 para nao pago: %i \nCodigo da festa: %i\n"
-                                                          ,vetorContrato[j].num,vetorContrato[j].valorTotal,vetorContrato[j].desconto,vetorContrato[j].valorFinal,vetorContrato[j].pagamento,vetorContrato[j].status,vetorContrato[j].codigo);                }
+printf("Numero do contrato: %i\nValor total: %f\n Desconto: %f \nValor Final : %f\nForma de pagamento: %i Parcela(s)\nStatus 1 para pago 2 para nao pago e 3 para cancelado: %i \nCodigo da festa: %i\n"
+                                                          ,vetorContrato[i].num,vetorContrato[i].valorTotal,vetorContrato[i].desconto,vetorContrato[i].valorFinal,vetorContrato[i].pagamento,vetorContrato[i].status
+                                                          ,vetorContrato[i].codigo);
+                          printf("\nVoce deseja pagar o contrato:\n1-sim\n2-nao\n3-cancelado");
+                scanf("%i",&vetorContrato[i].status);
+                FILE *arq6 = fopen("Contratos.txt","w");
+                for(j=0;j<=numeroContratos;j++){
+        fprintf(arq6,"%i;%f;%f;%f;%i;%i;%i\n",vetorContrato[j].num,vetorContrato[j].valorTotal,vetorContrato[j].desconto,vetorContrato[j].valorFinal,vetorContrato[j].pagamento,vetorContrato[j].status
+                                                          ,vetorContrato[j].codigo);
+                                                          }
+
+        fclose(arq6);
+
+
+                }
+
+
             }
-            
 
 
-        
+
+
 
 
         }
-        
+
         else {
-            printf("Nenhum contatro cadastrado.\n")
+            printf("Nenhum contatro cadastrado.\n");
             main();
         }
-        
-      
+
+
 
 
 
