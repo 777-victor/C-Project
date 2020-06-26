@@ -255,8 +255,7 @@ void cadastraFornecedor()
         else{
             forn.codigo=1;
         }
-        printf("Digite o codigo: ");
-        scanf("%i",&forn.codigo);
+
         fflush(stdin);
         printf("\nDigite o nome: ");
         gets(forn.nome);
@@ -281,6 +280,8 @@ void cadastraFornecedor()
 void cadastraFesta()
 {
     Festa festa;
+    char nome[100];
+    int i,j,valor,V;
          if(Search_in_File("Clientes.txt")==2){
         if(Search_in_File("Festas.txt")==2)
         {
@@ -290,8 +291,32 @@ void cadastraFesta()
         else{
             festa.codigo=1;
         }
+        lerClientes(VetorClientes);
+
+
         printf("\nDigite o nome do cliente: ");
         gets(festa.cliente);
+        strcpy(nome,festa.cliente);
+         for (i = 0; i <numeroClientes; i++)
+            {
+                          for(j = 0; VetorClientes[i].nome[j]; j++){
+            VetorClientes[i].nome[j] = tolower(VetorClientes[i].nome[j]);
+           }
+                           valor = strcmp(nome, VetorClientes[i].nome);
+                           if(valor == 0)
+                           {
+                            printf("\nCliente encontrado.");
+                            V=1;
+                           }
+
+            }
+
+        if(V != 1)
+        {
+            printf("Cliente nao encontrado cadastrado.\n");
+            main();
+        }
+
         printf("\nDigite a quantidade de convidados: ");
         scanf("%d",&festa.convidados);
         fflush(stdin);
@@ -309,7 +334,7 @@ void cadastraFesta()
         fflush(stdin);
         if(festa.horario != 12 && festa.horario !=18)
         {
-            printf("horario indisponivel");
+            printf("horario indisponivel\n");
             main();
         }
         }else{
@@ -580,7 +605,7 @@ void informacoesFuncionarios(Funcionario vetorFuncionario[])
                            valor = strcmp(nome, vetorFuncionario[i].nome);
                            if(valor == 0)
                            {
-                            printf("\nCodigo: %i \nNome:%s \nTelefone: %s\nFuncao: %s\nTipo: %s\n",
+                            printf("\nCodigo: %i \nNome:%s \nTelefone: %s\nFuncao: %s\nTipo 1 fixo e 2 para temporario: %s\n",
                                     vetorFuncionario[i].codigo, vetorFuncionario[i].nome,
                                     vetorFuncionario[i].telefone,vetorFuncionario[i].funcao,vetorFuncionario[i].tipo);
                            }
@@ -689,7 +714,7 @@ void verificaFestaData(Festa vetorFesta[],char data[20],int horario,int diaSeman
                            {
                                if(vetorFesta[i].horario==horario)
                                {
-                                   printf("\ndata indisponivel");
+                                   printf("\ndata indisponivel\n");
                                    main();
 
                                }
@@ -700,11 +725,11 @@ void verificaFestaData(Festa vetorFesta[],char data[20],int horario,int diaSeman
                            {
                                if(horarioFesta - HorarioAtual >= 4)
                                {
-                                   printf("\nHorario disponivel");
+                                   printf("\nHorario disponivel\n");
                                }
                                else
                                {
-                                  printf("\nHorario indisponivel");
+                                  printf("\nHorario indisponivel\n");
                                   main();
                                }
 
@@ -990,7 +1015,7 @@ void calculaPreco(Festa vetorFestas[])
     scanf("%i",&contract.status);
     fflush(stdin);
 
-    printf("O preco e: %f",valFinal);
+    printf("O preco e: %4.f\n",valFinal);
 
     if(Search_in_File("Contratos.txt")==2)
         {
