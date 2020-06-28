@@ -21,7 +21,7 @@ typedef struct Fornecedor{
 }Fornecedor;
 
 typedef struct Festa{
-    int codigo,convidados,diaSemana,horario;
+    int codigo,convidados,diaSemana,horario,horarioF;
     char tema[250],data[250],cliente[250],status[250];
 }Festa;
 
@@ -38,28 +38,37 @@ int numeroFestas=0;
 int numeroContratos=0;
 float preco=0;
 
+
+
 void cadastraCli();
 void cadastraFuncionario();
 void cadastraFornecedor();
 void cadastraFesta();
 
-
-
+int Search_in_File(char *fname);
 void strSplit(char *strTOsplit,char *strArr[], char *strSeparet,int nArr);
+
+
+void calculaPreco(Festa vetorFestas[]);
+
 void  lerClientes(Cliente VetorClientes[]);
 void  lerFuncionario(Funcionario vetorFuncionario[]);
 void  lerFornecedor(Fornecedor vetorFornecedor[]);
 void  lerFesta(Festa vetorFesta[]);
 void  lerContrato(Contrato vetorContrato[]);
 
-void verificaFestaData(Festa vetorFesta[],char data[20],int horario,int diaSemana);
+
+
+void verificaFestaData(Festa vetorFesta[],char data[20],int horario,int diaSemana,int horariof);
 void informacoesFuncionarios(Funcionario vetorFuncionario[]);
 void informacoesFornecedores(Fornecedor vetorFornecedor[]);
 void buscaFesta(Festa vetorFestas[]);
-
-void calculaPreco(Festa vetorFestas[]);
 void attContrato(Contrato vetorContrato[]);
 void buscaFestaData(Festa vetorFesta[]);
+
+
+
+
 
 
 
@@ -338,18 +347,26 @@ void cadastraFesta()
             main();
         }
         }else{
-        printf("\nDigite a hora: ");
+        printf("\nDigite a hora de inicio: ");
         scanf("%i",&festa.horario);
+        printf("\nDigite a hora fim: ");
+        scanf("%i",&festa.horarioF);
         }
+       
         fflush(stdin);
-
-        verificaFestaData(vetorFesta,festa.data,festa.horario,festa.diaSemana);
+ if(festa.horarioF-festa.horario<=4)
+        {
+        verificaFestaData(vetorFesta,festa.data,festa.horario,festa.diaSemana,festa.horarioF);
+        }
+        else{
+            printf("\nHorario invalido,Duracao maxima da festa e de 4 horas\n");
+        }
 
 
 
     FILE *arq4 = fopen("Festas.txt","a");
 
-    fprintf(arq4,"%d;%s;%d;%s;%s;%d;%i\n" ,festa.codigo,festa.cliente,festa.convidados,festa.tema,festa.data,festa.diaSemana,festa.horario);
+    fprintf(arq4,"%d;%s;%d;%s;%s;%d;%i;%i\n" ,festa.codigo,festa.cliente,festa.convidados,festa.tema,festa.data,festa.diaSemana,festa.horario,festa.horarioF);
 
 
     fclose(arq4);
@@ -482,12 +499,12 @@ void  lerFesta(Festa vetorFesta[])
             struct stat buf;
             stat("Festas.txt", &buf);
             char *result;
-            char * informacoes_linha[7];
+            char * informacoes_linha[8];
             int i =0;
              while (ftello(arquivo) != buf.st_size)   // Enquando não chegar no fim do arquivo..
             {
                 result = *fgets (linha, 100, arquivo);//Leitura de uma linha do arquivo...
-                strSplit(linha, informacoes_linha, ";",7); //Separa os campos e os armazena no vetor de 3 posições chamado informacoes_linha
+                strSplit(linha, informacoes_linha, ";",8); //Separa os campos e os armazena no vetor de 3 posições chamado informacoes_linha
                 //Cada posição do vetor VetorEmpregados guarda não so uma mas tres informações.
                 vetorFesta[i].codigo = atoi(informacoes_linha[0]);
                 strcpy(vetorFesta[i].cliente, (const char*)(informacoes_linha[1]) );
@@ -496,6 +513,8 @@ void  lerFesta(Festa vetorFesta[])
                 strcpy(vetorFesta[i].data, (const char*)(informacoes_linha[4]) );
                 vetorFesta[i].diaSemana = atoi(informacoes_linha[5]);
                 vetorFesta[i].horario = atoi(informacoes_linha[6]);
+                vetorFesta[i].horarioF = atoi(informacoes_linha[7]);
+
 
 
                 i++;
@@ -682,10 +701,10 @@ void buscaFesta(Festa vetorFestas[])
                            valor = strcmp(nome, vetorFestas[i].cliente);
                            if(valor == 0)
                            {
-                            printf("\nCodigo: %i \nNome:%s \nConvidados: %i\nTema: %s\nData:%s\nDia:%i\nHorario: %i\n",
+                            printf("\nCodigo: %i \nNome:%s \nConvidados: %i\nTema: %s\nData:%s\nDia:%i\nHorario inicial: %i\nHorario Final:%i\n",
                                     vetorFestas[i].codigo, vetorFestas[i].cliente,
                                     vetorFestas[i].convidados,vetorFestas[i].tema,vetorFestas[i].data,
-                                    vetorFestas[i].diaSemana,vetorFestas[i].horario);
+                                    vetorFestas[i].diaSemana,vetorFestas[i].horario,vetorFestas[i].horarioF);
                            }
 
             }
@@ -797,10 +816,10 @@ void buscaFestaData(Festa vetorFesta[])
                {
                    if(vetorFesta[i].horario == hor)
                    {
-                        printf("\nCodigo: %i \nNome:%s \nConvidados: %i\nTema: %s\nData:%s\nDia:%i\nHorario: %i\n",
+                        printf("\nCodigo: %i \nNome:%s \nConvidados: %i\nTema: %s\nData:%s\nDia:%i\nHorario inicio: %i\nHorario fim:%i\n",
                                     vetorFesta[i].codigo, vetorFesta[i].cliente,
                                     vetorFesta[i].convidados,vetorFesta[i].tema,vetorFesta[i].data,
-                                    vetorFesta[i].diaSemana,vetorFesta[i].horario);
+                                    vetorFesta[i].diaSemana,vetorFesta[i].horario,vetorFesta[i].horarioF);
 
                                     if(Search_in_File("Contratos.txt")==2)
                                                {
