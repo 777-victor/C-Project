@@ -305,7 +305,11 @@ void cadastraFesta()
 
         printf("\nDigite o nome do cliente: ");
         gets(festa.cliente);
+
         strcpy(nome,festa.cliente);
+        for(i = 0; nome[i]; i++){
+            nome[i] = tolower(nome[i]);
+           }
          for (i = 0; i <numeroClientes; i++)
             {
                           for(j = 0; VetorClientes[i].nome[j]; j++){
@@ -364,7 +368,6 @@ void cadastraFesta()
 
     fclose(arq4);
 
-    FILE *arq5 = fopen("DataFesta.txt","a");
 
          }
          else{
@@ -440,7 +443,6 @@ void  lerFuncionario(Funcionario vetorFuncionario[])
                 strcpy(vetorFuncionario[i].funcao, (const char*)(informacoes_linha[3]) );
                 strcpy(vetorFuncionario[i].salario, (const char*)(informacoes_linha[4]) );
                 strcpy(vetorFuncionario[i].tipo, (const char*)(informacoes_linha[5]) );
-
 
 
                 i++;
@@ -692,10 +694,10 @@ void buscaFesta(Festa vetorFestas[])
                            valor = strcmp(nome, vetorFestas[i].cliente);
                            if(valor == 0)
                            {
-                            printf("\nCodigo: %i \nNome:%s \nConvidados: %i\nTema: %s\nData:%s\nDia:%i\nHorario: %i\n",
+                            printf("\nCodigo: %i \nNome:%s \nConvidados: %i\nTema: %s\nData:%s\nDia:%i\nHorario: %i as %i\n",
                                     vetorFestas[i].codigo, vetorFestas[i].cliente,
                                     vetorFestas[i].convidados,vetorFestas[i].tema,vetorFestas[i].data,
-                                    vetorFestas[i].diaSemana,vetorFestas[i].horario);
+                                    vetorFestas[i].diaSemana,vetorFestas[i].horario,vetorFestas[i].horario+4);
                            }
 
             }
@@ -807,10 +809,10 @@ void buscaFestaData(Festa vetorFesta[])
                {
                    if(vetorFesta[i].horario == hor)
                    {
-                        printf("\nCodigo: %i \nNome:%s \nConvidados: %i\nTema: %s\nData:%s\nDia:%i\nHorario: %i\n",
+                        printf("\nCodigo: %i \nNome:%s \nConvidados: %i\nTema: %s\nData:%s\nDia:%i\nHorario: %i as %i\n",
                                     vetorFesta[i].codigo, vetorFesta[i].cliente,
                                     vetorFesta[i].convidados,vetorFesta[i].tema,vetorFesta[i].data,
-                                    vetorFesta[i].diaSemana,vetorFesta[i].horario);
+                                    vetorFesta[i].diaSemana,vetorFesta[i].horario,vetorFesta[i].horario+4);
 
                                     if(Search_in_File("Contratos.txt")==2)
                                                {
@@ -872,7 +874,7 @@ printf("Numero do contrato: %i\nValor total: %f\n Desconto: %f \nValor Final : %
                           printf("\nVoce deseja pagar o contrato:\n1-sim\n2-nao\n3-cancelado");
                 scanf("%i",&vetorContrato[i].status);
                 FILE *arq6 = fopen("Contratos.txt","w");
-                for(j=0;j<=numeroContratos;j++){
+                for(j=0;j<numeroContratos;j++){
         fprintf(arq6,"%i;%f;%f;%f;%i;%i;%i\n",vetorContrato[j].num,vetorContrato[j].valorTotal,vetorContrato[j].desconto,vetorContrato[j].valorFinal,vetorContrato[j].pagamento,vetorContrato[j].status
                                                           ,vetorContrato[j].codigo);
                                                           }
@@ -923,7 +925,7 @@ void calculaPreco(Festa vetorFestas[])
     {
         if(cod==vetorFestas[i].codigo)
         {
-            if(vetorFestas[i].convidados <= 30)
+            if(vetorFestas[i].convidados<50)
             {
                 if(vetorFestas[i].diaSemana >= 2 && vetorFestas[i].diaSemana<6)
                 {
@@ -983,7 +985,7 @@ void calculaPreco(Festa vetorFestas[])
     }
     if(preco<1800)
     {
-        printf("Codigo nao encontrado");
+        printf("Codigo nao encontrado\n");
         main();
     }
 
