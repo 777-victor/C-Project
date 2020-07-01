@@ -402,7 +402,7 @@ void  lerClientes(Cliente VetorClientes[])
             char *result;
             char * informacoes_linha[5];
             int i =0;
-            while (ftello(arquivo) != buf.st_size)  // Enquando não chegar no fim do arquivo..
+            while (ftell(arquivo) != buf.st_size)  // Enquando não chegar no fim do arquivo..
             {
                 result = *fgets (linha, 100, arquivo);//Leitura de uma linha do arquivo...
                 strSplit(linha, informacoes_linha, ";",5); //Separa os campos e os armazena no vetor de 3 posições chamado informacoes_linha
@@ -432,7 +432,7 @@ void  lerFuncionario(Funcionario vetorFuncionario[])
             char *result;
             char * informacoes_linha[6];
             int i =0;
-             while (ftello(arquivo) != buf.st_size)  // Enquando não chegar no fim do arquivo..
+             while (ftell(arquivo) != buf.st_size)  // Enquando não chegar no fim do arquivo..
             {
                 result = *fgets (linha, 100, arquivo);//Leitura de uma linha do arquivo...
                 strSplit(linha, informacoes_linha, ";",6); //Separa os campos e os armazena no vetor de 3 posições chamado informacoes_linha
@@ -465,7 +465,7 @@ void  lerFornecedor(Fornecedor vetorFornecedor[])
             char *result;
             char * informacoes_linha[4];
             int i =0;
-             while (ftello(arquivo) != buf.st_size)   // Enquando não chegar no fim do arquivo..
+             while (ftell(arquivo) != buf.st_size)   // Enquando não chegar no fim do arquivo..
             {
                 result = *fgets (linha, 100, arquivo);//Leitura de uma linha do arquivo...
                 strSplit(linha, informacoes_linha, ";",4); //Separa os campos e os armazena no vetor de 3 posições chamado informacoes_linha
@@ -496,7 +496,7 @@ void  lerFesta(Festa vetorFesta[])
             char *result;
             char * informacoes_linha[7];
             int i =0;
-             while (ftello(arquivo) != buf.st_size)   // Enquando não chegar no fim do arquivo..
+             while (ftell(arquivo) != buf.st_size)   // Enquando não chegar no fim do arquivo..
             {
                 result = *fgets (linha, 100, arquivo);//Leitura de uma linha do arquivo...
                 strSplit(linha, informacoes_linha, ";",7); //Separa os campos e os armazena no vetor de 3 posições chamado informacoes_linha
@@ -528,7 +528,7 @@ void  lerContrato(Contrato vetorContrato[])
             char *result;
             char * informacoes_linha[7];
             int i =0;
-             while (ftello(arquivo) != buf.st_size)   // Enquando não chegar no fim do arquivo..
+             while (ftell(arquivo) != buf.st_size)   // Enquando não chegar no fim do arquivo..
             {
                 result = *fgets (linha, 100, arquivo);//Leitura de uma linha do arquivo...
                 strSplit(linha, informacoes_linha, ";",7); //Separa os campos e os armazena no vetor de 3 posições chamado informacoes_linha
